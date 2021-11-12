@@ -14,19 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 
-
 class ArticleController extends AbstractController
 {
-    /**
-     * @Route("/", name="article_list")
-     * @Method({"GET"})
-     */
-    public function index(): Response
-    {
-        $articles = $this->getDoctrine()->getRepository(Article::class)->findAll();
-        return $this->render('articles/index.html.twig', ['articles' => $articles]);
-    }
-
     /**
      * @Route("/article/new", name="new_article")
      * @Method({"GET","POST"})
