@@ -6,6 +6,7 @@ namespace App\Controller\Article;
 
 use App\Entity\Article;
 use App\Form\ArticleFormType;
+use App\Repository\ArticleRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,51 +17,50 @@ use Symfony\Component\Routing\RouterInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 
-
-
-
-class CreateAction
+class UpdateAction
 {
-    private $formFactory;
     private $twig;
+    private $entityManager;
+    private $formFactory;
+    private $articleRepository;
     private $router;
-    private $entityManger;
 
     public function __construct(
         Environment $twig,
-        RouterInterface $router,
         EntityManagerInterface $entityManager,
-        FormFactoryInterface $formFactory
+        FormFactoryInterface $formFactory,
+        ArticleRepository $articleRepository,
+        RouterInterface $router
     )
     {
         $this->twig = $twig;
-        $this->router = $router;
-        $this->entityManger = $entityManager;
+        $this->entityManager = $entityManager;
         $this->formFactory = $formFactory;
+        $this->articleRepository = $articleRepository;
+        $this->router = $router;
     }
 
     /**
-     * @Route("/article/new", name="new_article")
+     * @Route("/article/update/{id}", name="update_article")
      * @Method({"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function update(Request $request, int $id): Response
     {
-        $article = new Article();
 
-        $form = $this->formFactory->create(ArticleFormType::class,$article);
-        $form->handleRequest($request);
+        $article = $this->articleRepository->find($id);
+
+       $form = $this->formFactory->create(ArticleFormType::class,$article);
+       $form->handleRequest($request);
+
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->entityManger->persist($article);
-            $this->entityManger->flush();
+           $this->entityManager->flush();
 
             return new RedirectResponse($this->router->generate('article_list'));
-
         }
 
-
-        return new Response($this->twig->render("/articles/new.html.twig", ['form' => $form->createView()]));
+        return new Response($this->twig->render("/articles/update.html.twig", ['form' => $form->createView()]));
     }
 
 }
