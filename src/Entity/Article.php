@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\ArticleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Author;
 
 /**
  * @ORM\Entity(repositoryClass=ArticleRepository::class)
@@ -32,6 +35,8 @@ final class Article
      * @ORM\Column(type="boolean")
      */
     private $enabled = true;
+
+
 
 // Getters and Setters
 

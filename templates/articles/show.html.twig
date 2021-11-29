@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
 {% block title %} {{ article.title }} {% endblock %}
 {% block body %}
-    <h1>{{ article.title }}</h1>
-    <p>{{ article.body }}</p>
+    <h1>Title: {{ article.title }}</h1>
+    <h2>Author: {{ author.name }}</h2>
+    <p>Body: {{ article.body }}</p>
     <hr>
     <a href="/">Go Back</a>
 {% endblock %}

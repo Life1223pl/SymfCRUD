@@ -6,6 +6,7 @@ namespace App\Controller\Article;
 
 
 use App\Repository\ArticleRepository;
+use App\Repository\AuthorRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\RouterInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,21 +14,24 @@ use Twig\Environment;
 use Symfony\Component\Routing\Annotation\Route;
 final class DeleteAction
 {
-    private $twig;
+
     private $articleRepository;
     private $entityManager;
     private $router;
+    private $authorRepository;
     public function __construct(
-        Environment $twig,
+
         EntityManagerInterface $entityManager,
         ArticleRepository $articleRepository,
-        RouterInterface $router
+        RouterInterface $router,
+        AuthorRepository $authorRepository
     )
     {
-        $this->twig = $twig;
+
         $this->articleRepository = $articleRepository;
         $this->entityManager = $entityManager;
         $this->router = $router;
+        $this->authorRepository = $authorRepository;
 
     }
 
@@ -36,8 +40,11 @@ final class DeleteAction
      */
     public function delete(int $id): RedirectResponse
     {
+
         $article = $this->articleRepository->find($id);
+        $author = $this->authorRepository->findOneBy(['article_id' => $id]);
         $entityManager = $this->entityManager;
+        $entityManager->remove($author);
         $entityManager->remove($article);
         $entityManager->flush();
 

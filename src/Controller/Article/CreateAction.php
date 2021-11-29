@@ -5,7 +5,9 @@ namespace App\Controller\Article;
 
 
 use App\Entity\Article;
+use App\Entity\Author;
 use App\Form\ArticleFormType;
+use App\Form\AuthorType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,13 +48,22 @@ class CreateAction
     public function new(Request $request): Response
     {
         $article = new Article();
+        $author = new Author();
 
-        $form = $this->formFactory->create(ArticleFormType::class,$article);
+
+        $form = $this->formFactory->create(ArticleFormType::class);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $article->setTitle($form['title']->getData());
+            $article->setBody($form['body']->getData());
 
             $this->entityManger->persist($article);
+            $this->entityManger->flush();
+            $author->setName($form['authorName']->getData());
+            $author->setArticleId($article->getId());
+            $this->entityManger->persist($author);
             $this->entityManger->flush();
 
             return new RedirectResponse($this->router->generate('article_list'));
@@ -60,7 +71,9 @@ class CreateAction
         }
 
 
-        return new Response($this->twig->render("/articles/new.html.twig", ['form' => $form->createView()]));
+        return new Response($this->twig->render("/articles/new.html.twig", [
+            'form' => $form->createView()
+        ]));
     }
 
 }

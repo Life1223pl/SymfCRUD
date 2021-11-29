@@ -18,6 +18,7 @@ class ArticleFormType extends AbstractType
     {
         $builder
             ->add('title',TextType::class, ['attr' => ['class' => 'form-control']])
+            ->add('authorName', TextType::class,['attr' => ['class' => 'form-control']])
             ->add('body', TextareaType::class, ['required' => 'false', 'attr' => ['class' => 'form-control']])
             ->add('Save', SubmitType::class, ['label' => "Create", 'attr' => ['class' => 'btn btn-primary mt-3']])
         ;
@@ -26,7 +27,6 @@ class ArticleFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Article::class,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'article_item'
